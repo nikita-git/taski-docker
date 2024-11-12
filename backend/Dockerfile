@@ -12,6 +12,10 @@ WORKDIR /app
 # в текущую директорию (текущая директория — это /app).
 COPY requirements.txt .
 
+# Cистемные зависимости в образе лучше устанавливать
+# до копирования файлов приложения.
+RUN pip install gunicorn==20.1.0
+
 # Выполнить в текущей директории команду терминала
 # для установки зависимостей.
 RUN pip install -r requirements.txt --no-cache-dir
@@ -22,4 +26,4 @@ RUN pip install -r requirements.txt --no-cache-dir
 COPY . .
 
 # При старте контейнера запустить сервер разработки.
-CMD ["python", "manage.py", "runserver", "0:8000"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "backend.wsgi"]
